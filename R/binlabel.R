@@ -1,7 +1,20 @@
 
-# named after ?base::.bincode
+
+#' @title Label a Numeric Vector by Bin
+#' 
+#' @param x a \link[base]{numeric} scalar
+#' 
+#' @param ... additional parameters of the function \link[scales]{label_number}
+#' 
+#' @returns
+#' The function [binlabel()] returns a \link[base]{function}.
+#' 
+#' @note
+#' The function [binlabel()] is named after \link[base]{.bincode}.
+#' 
 #' @importFrom scales label_number
-.binlabel <- \(x, ...) { # accuracy = .1
+#' @export
+binlabel <- \(x, ...) { # accuracy = .1
   
   if ((length(x) != 1L) || !is.numeric(x) || is.na(x)) stop('illegal input')
   
@@ -41,10 +54,10 @@
 
 
 if (FALSE) {
-  .binlabel_self <- \(x, FUN, ...) {
+  binlabel_self <- \(x, FUN, ...) {
     x |> 
-      .binlabel(x = FUN(x), ...)()
-    # `...` is for [.binlabel], **not** for `FUN`
+      binlabel(x = FUN(x), ...)()
+    # `...` is for [binlabel], **not** for `FUN`
     # HOWEVER!!
     # this is not a good idea!
     # the 2nd pipe cannot return a function, without `x` !!!

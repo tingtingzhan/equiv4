@@ -11,7 +11,7 @@ format.equiv <- \(x, accuracy = .1, ...) {
   # I do not have `@water` for all puree, yet
   
   .label <- min(current, x@target, na.rm = TRUE) |> 
-    .binlabel(accuracy = accuracy)
+    binlabel(accuracy = accuracy)
   
   current <- .label(current)
   
