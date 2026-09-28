@@ -26,6 +26,8 @@
 #' 
 #' new('equiv', current = c(a = .6, b = 1.3))
 #' 
+#' new('equiv', current = c(a = .6, b = 1.3) / 0)
+#' 
 #' new('equiv', current = c(a = .6, b = 1.3), 
 #'  target = c(a = NA_real_, b = 1))
 #' 
@@ -60,6 +62,14 @@ setMethod(f = initialize, signature = 'equiv', definition = \(.Object, ...) {
   x <- callNextMethod(.Object, ...)
 
   if (any(id <- is.na(x@current))) x@current <- x@current[!id]
+  
+  if (all(is.infinite(x@current))) {
+    # divided by a total of 0
+    x@current <- numeric()
+    return(x)
+  }
+  
+  if (any(is.infinite(x@current))) stop('does not allow Inf in @current')
   
   if ((length(x@tol) != 1L) || is.na(x@tol)) stop('@tol must be scalar')
   if (any(id <- (abs(x@current) < x@tol))) x@current <- x@current[!id]
