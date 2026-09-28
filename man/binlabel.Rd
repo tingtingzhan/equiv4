@@ -9,7 +9,7 @@ binlabel(x, ...)
 \arguments{
 \item{x}{a \link[base]{numeric} scalar}
 
-\item{...}{additional parameters of the function \link[scales]{label_number}}
+\item{...}{additional parameters to be passed into the function \link[scales]{label_number}, e.g., \code{accuracy}, etc.}
 }
 \value{
 The function \code{\link[=binlabel]{binlabel()}} returns a \link[base]{function}.
@@ -19,4 +19,10 @@ Label a Numeric Vector by Bin
 }
 \note{
 The function \code{\link[=binlabel]{binlabel()}} is named after \link[base]{.bincode}.
+}
+\examples{
+binlabel(.03)(.873)
+binlabel(.03, accuracy = .1)(.873)
+binlabel(.003)(.87)
+
 }

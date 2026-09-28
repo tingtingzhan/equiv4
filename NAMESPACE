@@ -5,6 +5,7 @@ export(binlabel)
 exportClasses(equiv)
 exportMethods(show)
 import(methods)
+importFrom(charwidth,row_fmt_matrix)
 importFrom(cli,
   col_br_blue,
   col_br_red,

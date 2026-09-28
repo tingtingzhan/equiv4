@@ -5,22 +5,39 @@
 #' @title \linkS4class{equiv}
 #' 
 #' @description
-#' An `S4` object to determine the equivalence at a margin.
+#' An `S4` object to determine the equivalence(s) at a margin.
 #' 
-#' @slot current,target \link[base]{numeric} scalars, named after the function \link[base]{all.equal.numeric}
+#' @slot current named \link[base]{numeric} \link[base]{vector} \eqn{x} without missing value.
 #' 
-#' @slot margin \link[base]{numeric} scalar, the acceptance margin of the ratio `current/target`, default value is 1.1.  In other words, `current` is considered equivalent to `target`, if `current/target` \eqn{\in} `(1/margin, margin)`.
+#' @slot target \link[base]{numeric} \link[base]{vector} \eqn{x_0} of the same \link[base]{length} as the parameter `current`
 #' 
-#' @slot tol \link[base]{numeric} scalar, default value is `.Machine$double.eps`
+#' @slot margin \link[base]{numeric} scalar, the acceptance margin \eqn{m} of the ratio \eqn{x/x_0}, default value is 1.1.  In other words, \eqn{x} is considered equivalent to \eqn{x_0}, if \eqn{x/x_0\in (1/m, m)}.
+#' 
+#' @slot tol \link[base]{numeric} scalar, the tolerance, default value is `.Machine$double.eps`
 #' 
 #' @references 
 #' \url{https://en.wikipedia.org/wiki/Bioequivalence}
 #' 
-#' @examples 
-#' new('equiv', current = .6)
-#' new('equiv', current = .6, target = 1)
-#' new('equiv', current = 1.3, target = 1)
+#' @note
+#' The parameter names `'current'` and `'target'` are named after the function \link[base]{all.equal.numeric}.
 #' 
+#' @examples 
+#' new('equiv')
+#' 
+#' new('equiv', current = c(a = .6, b = 1.3))
+#' 
+#' new('equiv', current = c(a = .6, b = 1.3), 
+#'  target = c(a = NA_real_, b = 1))
+#' 
+#' new('equiv', current = c(a = .6, b = 1.3, d = .9), 
+#'  target = c(b = 1, e = 1))
+#'
+#' cur = c(a=2e-3, b=2e-2, c=2e-1, d=2, e=2e1)
+#' targt = rnorm(n = length(cur), mean = cur, sd = cur/10)
+#' names(targt) = names(cur)
+#' new('equiv', current = cur)
+#' new('equiv', current = cur, target = targt)
+#'  
 #' @name equiv-class
 #' @export
 setClass(Class = 'equiv', slots = c(
@@ -29,8 +46,6 @@ setClass(Class = 'equiv', slots = c(
   margin = 'numeric',
   tol = 'numeric'
 ), prototype = prototype(
-  current = NA_real_,
-  target = NA_real_,
   margin = 1.1,
   tol = .Machine$double.eps
 ))
@@ -43,8 +58,30 @@ setClass(Class = 'equiv', slots = c(
 setMethod(f = initialize, signature = 'equiv', definition = \(.Object, ...) {
   
   x <- callNextMethod(.Object, ...)
+
+  if (any(id <- is.na(x@current))) x@current <- x@current[!id]
   
-  if (!length(x@current)) x@current <- NA_real_
+  if ((length(x@tol) != 1L) || is.na(x@tol)) stop('@tol must be scalar')
+  if (any(id <- (abs(x@current) < x@tol))) x@current <- x@current[!id]
+  
+  if (any(id <- (x@current < 0))) x@current <- x@current[!id] # exception handling
+  
+  nc <- length(x@current)
+  if (!nc) return(x) # len-0 `@current`
+  
+  nmc <- names(x@current)
+  if (!length(nmc) || anyNA(nmc) || !all(nzchar(nmc))) stop('@current must be fully named')
+  
+  if (!length(x@target)) return(x)
+  
+  nmt <- names(x@target)
+  if (!length(nmt) || anyNA(nmt) || !all(nzchar(nmt))) stop('@target must be fully named')
+  if (identical(nmt, nmc)) return(x)
+  
+  z <- x@current * NA_real_
+  nm <- intersect(nmc, nmt)
+  z[nm] <- x@target[nm]
+  x@target <- z
   
   return(x)
   
@@ -53,15 +90,17 @@ setMethod(f = initialize, signature = 'equiv', definition = \(.Object, ...) {
 
 
 
-
-
 #' @rdname equiv-class
 #' @param object an \linkS4class{equiv} object
+#' @importFrom charwidth row_fmt_matrix
 #' @export
 setMethod(f = show, signature = 'equiv', definition = \(object) {
-  z <- object |> 
+  fmt <- object |> 
     format.equiv()
-  paste0(names(z), ': ', z) |>
+  if (!length(fmt)) return(invisible()) # exception handling
+  fmt |>
+    row_fmt_matrix() |>
     cat(sep = '\n')
+  # cli_verbatim() # sep by '\n' by default
 })
 
