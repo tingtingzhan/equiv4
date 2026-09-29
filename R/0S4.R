@@ -28,8 +28,8 @@
 #' 
 #' new('equiv', current = c(a = .6, b = 1.3) / 0)
 #' 
-#' new('equiv', current = c(a = .6, b = 1.3), 
-#'  target = c(a = NA_real_, b = 1))
+#' new('equiv', current = c(a = .6, b = 1, c = 1.3), 
+#'  target = c(a = NA_real_, b = NA_real_, c = 1))
 #' 
 #' new('equiv', current = c(a = .6, b = 1.3, d = .9), 
 #'  target = c(b = 1, e = 1))
@@ -86,12 +86,18 @@ setMethod(f = initialize, signature = 'equiv', definition = \(.Object, ...) {
   
   nmt <- names(x@target)
   if (!length(nmt) || anyNA(nmt) || !all(nzchar(nmt))) stop('@target must be fully named')
-  if (identical(nmt, nmc)) return(x)
   
-  z <- x@current * NA_real_
-  nm <- intersect(nmc, nmt)
-  z[nm] <- x@target[nm]
-  x@target <- z
+  if (!identical(nmt, nmc)) {
+    z <- x@current * NA_real_
+    nm <- intersect(nmc, nmt)
+    z[nm] <- x@target[nm]
+    x@target <- z
+  }
+  
+  if (any(id <- (abs(x@current - 1) < .Machine$double.eps) & is.na(x@target))) {
+    x@current <- x@current[!id]
+    x@target <- x@target[!id]
+  }
   
   return(x)
   

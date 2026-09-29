@@ -36,8 +36,8 @@ new('equiv', current = c(a = .6, b = 1.3))
 
 new('equiv', current = c(a = .6, b = 1.3) / 0)
 
-new('equiv', current = c(a = .6, b = 1.3), 
- target = c(a = NA_real_, b = 1))
+new('equiv', current = c(a = .6, b = 1, c = 1.3), 
+ target = c(a = NA_real_, b = NA_real_, c = 1))
 
 new('equiv', current = c(a = .6, b = 1.3, d = .9), 
  target = c(b = 1, e = 1))
