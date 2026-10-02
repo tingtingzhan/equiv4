@@ -107,7 +107,7 @@ setMethod(f = initialize, signature = 'equiv', definition = \(.Object, ...) {
 
 
 #' @rdname equiv-class
-#' @param object an \linkS4class{equiv} object
+#' @param object,x an \linkS4class{equiv} object
 #' @importFrom charwidth row_fmt_matrix
 #' @export
 setMethod(f = show, signature = 'equiv', definition = \(object) {

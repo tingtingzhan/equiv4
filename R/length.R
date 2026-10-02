@@ -1,9 +1,10 @@
 
 
 
-#' @title \link[base]{length} of \linkS4class{equiv} Object
+#' @rdname equiv-class
 #' 
-#' @param x a \linkS4class{equiv} object
+#' @details
+#' The \link[base]{length} method returns an \link[base]{integer}, which is the \link[base]{length} of the slot `@current`.
 #' 
 #' @export
 setMethod(f = length, signature = 'equiv', definition = \(x) {
