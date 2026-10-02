@@ -3,6 +3,7 @@
 S3method(format,equiv)
 export(binlabel)
 exportClasses(equiv)
+exportMethods(length)
 exportMethods(show)
 import(methods)
 importFrom(charwidth,row_fmt_matrix)
