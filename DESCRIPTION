@@ -2,7 +2,7 @@ Package: equiv4
 Type: Package
 Title: equiv4
 Version: 0.1.0
-Date: 2026-09-05
+Date: 2026-10-09
 Description: Need to think more..
 Authors@R: c(person(given = "Tingting", family = "Zhan", role = c("aut", "cre"), email = "tingtingzhan@gmail.com"))
 Language: en-US
@@ -10,5 +10,5 @@ Encoding: UTF-8
 License: GPL-2
 Depends: R (>= 4.6)
 Imports: methods, cli (== 3.6.6), scales (== 1.4.0), charwidth
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
 Config/roxygen2/markdown: TRUE
