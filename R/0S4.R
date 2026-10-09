@@ -19,7 +19,7 @@
 #' \url{https://en.wikipedia.org/wiki/Bioequivalence}
 #' 
 #' @note
-#' The parameter names `'current'` and `'target'` are named after the function \link[base]{all.equal.numeric}.
+#' The parameters `'current'` and `'target'` are named after the function \link[base]{all.equal.numeric}.
 #' 
 #' @examples 
 #' new('equiv')
@@ -53,6 +53,18 @@ setClass(Class = 'equiv', slots = c(
 ))
 
 
+if (FALSE) {
+  setClass(Class = 'equiv0', contains = 'numeric', slot = c(names = 'character', any = 'ANY'))
+  x = c(a = .6, b = 1.3) 
+  x |>
+    attr(which = 'names')
+  
+  # inherit directly from an atomic type via `contains`
+  new('equiv0', x)@.Data # names not retained!!!
+  
+  # explicit slot
+  new('equiv0', rnorm(3), any = x)@any # names are retained
+}
 
 
 
@@ -80,7 +92,9 @@ setMethod(f = initialize, signature = 'equiv', definition = \(.Object, ...) {
   if (!nc) return(x) # len-0 `@current`
   
   nmc <- names(x@current)
-  if (!length(nmc) || anyNA(nmc) || !all(nzchar(nmc))) stop('@current must be fully named')
+  if (!length(nmc) || anyNA(nmc) || !all(nzchar(nmc))) {
+    stop('@current must be fully named')
+  } 
   
   if (!length(x@target)) return(x)
   

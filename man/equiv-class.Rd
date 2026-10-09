@@ -33,7 +33,7 @@ The \link[base]{length} method returns an \link[base]{integer}, which is the \li
 }}
 
 \note{
-The parameter names \code{'current'} and \code{'target'} are named after the function \link[base]{all.equal.numeric}.
+The parameters \code{'current'} and \code{'target'} are named after the function \link[base]{all.equal.numeric}.
 }
 \examples{
 new('equiv')
