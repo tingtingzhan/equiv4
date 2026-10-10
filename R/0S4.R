@@ -1,11 +1,14 @@
 
 #' @import methods
+#' @import cli
 
 
 #' @title \linkS4class{equiv}
 #' 
 #' @description
 #' An `S4` object to determine the equivalence(s) at a margin.
+#' 
+#' @slot caption \link[base]{character} scalar
 #' 
 #' @slot current named \link[base]{numeric} \link[base]{vector} \eqn{x} without missing value.
 #' 
@@ -15,16 +18,25 @@
 #' 
 #' @slot tol \link[base]{numeric} scalar, the tolerance, default value is `.Machine$double.eps`
 #' 
+#' @param object,x an \linkS4class{equiv} object
+#' 
+#' @param value see the function \link[base]{names<-}
+#' 
 #' @references 
 #' \url{https://en.wikipedia.org/wiki/Bioequivalence}
 #' 
 #' @note
+#' 
+#' The parameter `'caption'` is named after the function `flextable::set_caption`.
+#' 
 #' The parameters `'current'` and `'target'` are named after the function \link[base]{all.equal.numeric}.
 #' 
 #' @examples 
 #' new('equiv')
 #' 
 #' new('equiv', current = c(a = .6, b = 1.3))
+#' 
+#' new('equiv', caption = 'Title', current = c(a = .6, b = 1.3))
 #' 
 #' new('equiv', current = c(a = .6, b = 1.3) / 0)
 #' 
@@ -43,6 +55,7 @@
 #' @name equiv-class
 #' @export
 setClass(Class = 'equiv', slots = c(
+  caption = 'character',
   current = 'numeric',
   target = 'numeric',
   margin = 'numeric',
@@ -73,6 +86,8 @@ setMethod(f = initialize, signature = 'equiv', definition = \(.Object, ...) {
   
   x <- callNextMethod(.Object, ...)
 
+  if (length(x@caption) > 1L) stop('@caption length must <=1L')
+  
   if (any(id <- is.na(x@current))) x@current <- x@current[!id]
   
   if (all(is.infinite(x@current))) {
@@ -119,18 +134,4 @@ setMethod(f = initialize, signature = 'equiv', definition = \(.Object, ...) {
 
 
 
-
-#' @rdname equiv-class
-#' @param object,x an \linkS4class{equiv} object
-#' @importFrom charwidth row_fmt_matrix
-#' @export
-setMethod(f = show, signature = 'equiv', definition = \(object) {
-  fmt <- object |> 
-    format.equiv()
-  if (!length(fmt)) return(invisible()) # exception handling
-  fmt |>
-    row_fmt_matrix() |>
-    cat(sep = '\n')
-  # cli_verbatim() # sep by '\n' by default
-})
 

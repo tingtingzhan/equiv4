@@ -1,5 +1,4 @@
 
-#' @importFrom cli col_br_blue col_grey col_br_red style_bold
 #' @export
 format.equiv <- \(x, accuracy = .1, ...) {
   
