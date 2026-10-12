@@ -12,7 +12,7 @@
 #' 
 #' @slot current named \link[base]{numeric} \link[base]{vector} \eqn{x} without missing value.
 #' 
-#' @slot target \link[base]{numeric} \link[base]{vector} \eqn{x_0} of the same \link[base]{length} as the parameter `current`
+#' @slot target (optional) \link[base]{numeric} \link[base]{vector} \eqn{x_0} of the same \link[base]{length} as the slot `@current`
 #' 
 #' @slot tol \link[base]{numeric} scalar, the tolerance, default value is `.Machine$double.eps`
 #' 
@@ -25,9 +25,9 @@
 #' 
 #' @note
 #' 
-#' The parameter `'caption'` is named after the function `flextable::set_caption`.
+#' The parameter/slot `'caption'` is named after the function \link[flextable]{set_caption}. Another option is to use `title` as in the function \link[ggplot2]{labs}.
 #' 
-#' The parameters `'current'` and `'target'` are named after the function \link[base]{all.equal.numeric}.
+#' The parameters/slots `'current'` and `'target'` are named after the function \link[base]{all.equal.numeric}.
 #' 
 #' @examples 
 #' equiv()
@@ -37,8 +37,7 @@
 #' 
 #' equiv(caption = 'Title', current = c(a = .6, b = 1.3))
 #' 
-#' equiv(current = c(a = .6, b = 1, c = 1.3), 
-#'  target = c(a = NA_real_, b = NA_real_, c = 1))
+#' equiv(current = c(a = .6, b = 1, c = 1.3), target = c(c = 1))
 #' 
 #' equiv(current = c(a = .6, b = 1.3, d = .9), target = c(b = 1, e = 1))
 #'
