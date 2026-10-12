@@ -1,6 +1,10 @@
 
+# @param margin \link[base]{numeric} scalar, the acceptance margin \eqn{m} of the ratio \eqn{x/x_0}, default value is 1.1.  In other words, \eqn{x} is considered equivalent to \eqn{x_0}, if \eqn{x/x_0\in (1/m, m)}.
+#' 
+
+
 #' @export
-format.equiv <- \(x, accuracy = .1, ...) {
+format.equiv <- \(x, margin = 1.1, accuracy = .1, ...) {
   
   n <- length(x@current)
   if (!n) return(invisible()) # exception handling
@@ -32,7 +36,7 @@ format.equiv <- \(x, accuracy = .1, ...) {
   if (length(x@target)) {
     
     rel <- (x@current/x@target) |> 
-      .bincode(breaks = c(0, 1/x@margin, x@margin, Inf))
+      .bincode(breaks = c(0, 1/margin, margin, Inf))
     
     z[1L, ] <- fmt_current |>
       mapply(FUN = \(x, rel) {

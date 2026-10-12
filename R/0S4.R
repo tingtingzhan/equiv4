@@ -14,8 +14,6 @@
 #' 
 #' @slot target \link[base]{numeric} \link[base]{vector} \eqn{x_0} of the same \link[base]{length} as the parameter `current`
 #' 
-#' @slot margin \link[base]{numeric} scalar, the acceptance margin \eqn{m} of the ratio \eqn{x/x_0}, default value is 1.1.  In other words, \eqn{x} is considered equivalent to \eqn{x_0}, if \eqn{x/x_0\in (1/m, m)}.
-#' 
 #' @slot tol \link[base]{numeric} scalar, the tolerance, default value is `.Machine$double.eps`
 #' 
 #' @param object,x an \linkS4class{equiv} object
@@ -32,36 +30,31 @@
 #' The parameters `'current'` and `'target'` are named after the function \link[base]{all.equal.numeric}.
 #' 
 #' @examples 
-#' new('equiv')
+#' equiv()
+#' equiv(current = c(a = .6, b = 1.3) / 0)
 #' 
-#' new('equiv', current = c(a = .6, b = 1.3))
+#' equiv(current = c(a = .6, b = 1.3))
 #' 
-#' new('equiv', caption = 'Title', current = c(a = .6, b = 1.3))
+#' equiv(caption = 'Title', current = c(a = .6, b = 1.3))
 #' 
-#' new('equiv', current = c(a = .6, b = 1.3) / 0)
-#' 
-#' new('equiv', current = c(a = .6, b = 1, c = 1.3), 
+#' equiv(current = c(a = .6, b = 1, c = 1.3), 
 #'  target = c(a = NA_real_, b = NA_real_, c = 1))
 #' 
-#' new('equiv', current = c(a = .6, b = 1.3, d = .9), 
-#'  target = c(b = 1, e = 1))
+#' equiv(current = c(a = .6, b = 1.3, d = .9), target = c(b = 1, e = 1))
 #'
 #' cur = c(a=2e-3, b=2e-2, c=2e-1, d=2, e=2e1)
 #' targt = rnorm(n = length(cur), mean = cur, sd = cur/10)
 #' names(targt) = names(cur)
-#' new('equiv', current = cur)
-#' new('equiv', current = cur, target = targt)
-#'  
-#' @name equiv-class
+#' equiv(current = cur)
+#' equiv(current = cur, target = targt)
+#'
 #' @export
 setClass(Class = 'equiv', slots = c(
   caption = 'character',
   current = 'numeric',
   target = 'numeric',
-  margin = 'numeric',
   tol = 'numeric'
 ), prototype = prototype(
-  margin = 1.1,
   tol = .Machine$double.eps
 ))
 
@@ -76,61 +69,77 @@ if (FALSE) {
   new('equiv0', x)@.Data # names not retained!!!
   
   # explicit slot
-  new('equiv0', rnorm(3), any = x)@any # names are retained
+  new('equiv0', double(), any = x)@any # names are retained
+  
+  # therefore, must use an explicit slot `@current`
 }
 
 
+#' @rdname equiv-class
+#' @param caption,current,target,tol see **Slots**
+#' @param ... additional parameters, currently of no use
+#' @export
+equiv <- \(
+  caption = character(),
+  current, 
+  target = double(),
+  tol = .Machine$double.eps,
+  ...
+) {
+  
+  if (length(caption) > 1L) stop('`caption` length must <=1L')
+  
+  if (missing(current)) return(new(Class = 'equiv'))
+  
+  if (any(id <- is.na(current))) current <- current[!id]
+  
+  if (all(is.infinite(current))) return(new(Class = 'equiv')) # divided by a total of 0
 
-
-setMethod(f = initialize, signature = 'equiv', definition = \(.Object, ...) {
+  if (any(is.infinite(current))) stop('does not allow Inf in `current`')
   
-  x <- callNextMethod(.Object, ...)
-
-  if (length(x@caption) > 1L) stop('@caption length must <=1L')
+  if ((length(tol) != 1L) || is.na(tol)) stop('`tol` must be scalar')
+  if (any(id <- (abs(current) < tol))) current <- current[!id]
   
-  if (any(id <- is.na(x@current))) x@current <- x@current[!id]
+  if (any(id <- (current < 0))) current <- current[!id] # exception handling
   
-  if (all(is.infinite(x@current))) {
-    # divided by a total of 0
-    x@current <- numeric()
-    return(x)
-  }
+  nc <- length(current)
+  if (!nc) return(new(Class = 'equiv'))
   
-  if (any(is.infinite(x@current))) stop('does not allow Inf in @current')
-  
-  if ((length(x@tol) != 1L) || is.na(x@tol)) stop('@tol must be scalar')
-  if (any(id <- (abs(x@current) < x@tol))) x@current <- x@current[!id]
-  
-  if (any(id <- (x@current < 0))) x@current <- x@current[!id] # exception handling
-  
-  nc <- length(x@current)
-  if (!nc) return(x) # len-0 `@current`
-  
-  nmc <- names(x@current)
+  nmc <- names(current)
   if (!length(nmc) || anyNA(nmc) || !all(nzchar(nmc))) {
-    stop('@current must be fully named')
+    stop('`current` must be fully named')
   } 
   
-  if (!length(x@target)) return(x)
+  if (!length(target)) return(new(
+    Class = 'equiv', 
+    caption = caption, 
+    current = current
+  ))
   
-  nmt <- names(x@target)
+  nmt <- names(target)
   if (!length(nmt) || anyNA(nmt) || !all(nzchar(nmt))) stop('@target must be fully named')
   
   if (!identical(nmt, nmc)) {
-    z <- x@current * NA_real_
+    z <- current * NA_real_
     nm <- intersect(nmc, nmt)
-    z[nm] <- x@target[nm]
-    x@target <- z
+    z[nm] <- target[nm]
+    target <- z
   }
   
-  if (any(id <- (abs(x@current - 1) < .Machine$double.eps) & is.na(x@target))) {
-    x@current <- x@current[!id]
-    x@target <- x@target[!id]
+  if (any(id <- (abs(current - 1) < .Machine$double.eps) & is.na(target))) {
+    current <- current[!id]
+    target <- target[!id]
   }
   
-  return(x)
+  return(new(
+    Class = 'equiv', 
+    caption = caption, 
+    current = current, 
+    target = target,
+    tol = tol
+  ))
   
-})
+}#)
 
 
 

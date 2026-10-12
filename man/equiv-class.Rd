@@ -3,12 +3,21 @@
 \docType{class}
 \name{equiv-class}
 \alias{equiv-class}
+\alias{equiv}
 \alias{length,equiv-method}
 \alias{names,equiv-method}
 \alias{names<-,equiv-method}
 \alias{show,equiv-method}
 \title{\linkS4class{equiv}}
 \usage{
+equiv(
+  caption = character(),
+  current,
+  target = double(),
+  tol = .Machine$double.eps,
+  ...
+)
+
 \S4method{length}{equiv}(x)
 
 \S4method{names}{equiv}(x)
@@ -18,6 +27,10 @@
 \S4method{show}{equiv}(object)
 }
 \arguments{
+\item{caption, current, target, tol}{see \strong{Slots}}
+
+\item{...}{additional parameters, currently of no use}
+
 \item{value}{see the function \link[base]{names<-}}
 
 \item{object, x}{an \linkS4class{equiv} object}
@@ -41,8 +54,6 @@ The \link[base]{names<-} method returns an \linkS4class{equiv} object.
 
 \item{\code{target}}{\link[base]{numeric} \link[base]{vector} \eqn{x_0} of the same \link[base]{length} as the parameter \code{current}}
 
-\item{\code{margin}}{\link[base]{numeric} scalar, the acceptance margin \eqn{m} of the ratio \eqn{x/x_0}, default value is 1.1.  In other words, \eqn{x} is considered equivalent to \eqn{x_0}, if \eqn{x/x_0\in (1/m, m)}.}
-
 \item{\code{tol}}{\link[base]{numeric} scalar, the tolerance, default value is \code{.Machine$double.eps}}
 }}
 
@@ -52,26 +63,24 @@ The parameter \code{'caption'} is named after the function \code{flextable::set_
 The parameters \code{'current'} and \code{'target'} are named after the function \link[base]{all.equal.numeric}.
 }
 \examples{
-new('equiv')
+equiv()
+equiv(current = c(a = .6, b = 1.3) / 0)
 
-new('equiv', current = c(a = .6, b = 1.3))
+equiv(current = c(a = .6, b = 1.3))
 
-new('equiv', caption = 'Title', current = c(a = .6, b = 1.3))
+equiv(caption = 'Title', current = c(a = .6, b = 1.3))
 
-new('equiv', current = c(a = .6, b = 1.3) / 0)
-
-new('equiv', current = c(a = .6, b = 1, c = 1.3), 
+equiv(current = c(a = .6, b = 1, c = 1.3), 
  target = c(a = NA_real_, b = NA_real_, c = 1))
 
-new('equiv', current = c(a = .6, b = 1.3, d = .9), 
- target = c(b = 1, e = 1))
+equiv(current = c(a = .6, b = 1.3, d = .9), target = c(b = 1, e = 1))
 
 cur = c(a=2e-3, b=2e-2, c=2e-1, d=2, e=2e1)
 targt = rnorm(n = length(cur), mean = cur, sd = cur/10)
 names(targt) = names(cur)
-new('equiv', current = cur)
-new('equiv', current = cur, target = targt)
- 
+equiv(current = cur)
+equiv(current = cur, target = targt)
+
 }
 \references{
 \url{https://en.wikipedia.org/wiki/Bioequivalence}
