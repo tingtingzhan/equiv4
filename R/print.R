@@ -1,5 +1,7 @@
+
+#' @importFrom charwidth row_fmt_matrix
 #' @export
-print.equiv <- \(x, fmt_caption = '%s\n', ...) {
+print.equiv <- \(x, fmt_caption = '%s', ...) {
   
   fmt <- x |> 
     format.equiv()
@@ -8,7 +10,7 @@ print.equiv <- \(x, fmt_caption = '%s\n', ...) {
   x@caption |> # len0 compatible
     sprintf(fmt = fmt_caption) |> 
     bg_br_yellow() |> style_bold() |>
-    cat()
+    cat('\n')
   
   fmt |>
     row_fmt_matrix() |>
@@ -18,6 +20,5 @@ print.equiv <- \(x, fmt_caption = '%s\n', ...) {
 
 
 #' @rdname equiv-class
-#' @importFrom charwidth row_fmt_matrix
 #' @export
 setMethod(f = show, signature = 'equiv', definition = \(object) print.equiv(object))

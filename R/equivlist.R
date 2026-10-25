@@ -25,7 +25,7 @@ equivlist <- \(...) {
 
 #' @importFrom charwidth row_fmt_matrix
 #' @export
-print.equivlist <- \(x, ...) {
+print.equivlist <- \(x, fmt_caption = '%s', ...) {
   
   y1 <- x |>
     lapply(FUN = \(i) i@current) |>
@@ -45,9 +45,9 @@ print.equivlist <- \(x, ...) {
     do.call(what = cbind) # to make sure not getting a 'vector'
   
   x[[1L]]@caption |> 
-    sprintf(fmt = '\u214c %s\n') |> 
+    sprintf(fmt = fmt_caption) |> 
     style_bold() |> bg_br_yellow() |> 
-    cat()
+    cat('\n')
   y |>
     row_fmt_matrix() |>
     cat(sep = '\n')

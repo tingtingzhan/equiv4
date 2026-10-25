@@ -23,13 +23,12 @@ equivs <- \(...) {
 
 
 
-
 #' @export
 print.equivs <- \(x, ...) {
   
   x |>
     lapply(FUN = \(i) { # do not want to print list names
-      print(i, fmt_caption = '\u214c %s\n') # [print.equiv]
+      print(i, ...) # [print.equiv]
       cat('\n')
     })
   
