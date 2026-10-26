@@ -29,7 +29,7 @@ print.equivlist <- \(x, fmt_caption = '%s', ...) {
   
   y1 <- x |>
     lapply(FUN = \(i) i@current) |>
-    do.call(what = rbind_unbalanced, args = _)
+    do.call(what = rbind_by_name, args = _)
   
   if (!length(y1)) return(invisible())
   

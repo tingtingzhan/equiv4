@@ -59,16 +59,16 @@ setClass(Class = 'equiv', slots = c(
 
 
 if (FALSE) {
-  setClass(Class = 'equiv0', contains = 'numeric', slot = c(names = 'character', any = 'ANY'))
+  setClass(Class = 'newcls', contains = 'numeric', slot = c(names = 'character', any = 'ANY'))
   x = c(a = .6, b = 1.3) 
   x |>
     attr(which = 'names')
   
   # inherit directly from an atomic type via `contains`
-  new('equiv0', x)@.Data # names not retained!!!
+  new('newcls', x)@.Data # names not retained!!!
   
   # explicit slot
-  new('equiv0', double(), any = x)@any # names are retained
+  new('newcls', any = x)@any # names are retained
   
   # therefore, must use an explicit slot `@current`
 }
@@ -138,7 +138,7 @@ equiv <- \(
     tol = tol
   ))
   
-}#)
+}
 
 
 
