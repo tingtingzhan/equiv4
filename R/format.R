@@ -4,7 +4,23 @@
 
 
 #' @export
-format.equiv <- \(x, margin = 1.1, accuracy = .1, ...) {
+cut.equiv <- \(x, margin = 1.1, ...) {
+  
+  if (!length(x@current) || !length(x@target)) return(invisible()) # exception handling
+  
+  (x@current/x@target) |> 
+    .bincode(
+      breaks = c(0, 1/margin, margin, Inf),
+      ...
+    )
+  
+}
+
+
+
+
+#' @export
+format.equiv <- \(x, accuracy = .1, ...) {
   
   n <- length(x@current)
   if (!n) return(invisible()) # exception handling
@@ -35,19 +51,26 @@ format.equiv <- \(x, margin = 1.1, accuracy = .1, ...) {
 
   if (length(x@target)) {
     
-    rel <- (x@current/x@target) |> 
-      .bincode(breaks = c(0, 1/margin, margin, Inf))
-    
     z[1L, ] <- fmt_current |>
       mapply(FUN = \(x, rel) {
-        switch(as.character(rel), '1' = { # current < target
-          x |> col_br_blue() |> style_bold()
-        }, 'NA' =, '2' = { # current == target
-          x |> col_grey()
-        }, '3' = { # current > target
-          x |> col_br_red() |> style_bold()
-        })
-      }, x = _, rel = rel)
+        switch(
+          EXPR = rel, 
+          '1' = { # current < target
+            x |> col_br_blue() |> style_bold()
+          }, 
+          'NA' =, '2' = { # current == target
+            x |> col_grey()
+          }, 
+          '3' = { # current > target
+            x |> col_br_red() |> style_bold()
+          }
+        )
+      }, 
+      x = _, 
+      rel = x |>
+        cut.equiv(...) |>
+        as.character()
+      )
     
     z[2L, ] <- mapply(
       FUN = \(fn, x) fn(x), 

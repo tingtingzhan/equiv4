@@ -49,3 +49,31 @@ rbind_by_name <- \(...) {
   return(z)
   
 }
+
+
+
+#' @title Summation by Name
+#' 
+#' @description ..
+#' 
+#' @param ... \strong{named} \link[base]{numeric} \link[base]{vector}s
+#' 
+#' @return 
+#' The function [sum_by_name()] returns a \link[base]{numeric} \link[base]{vector}.
+#' 
+#' @examples
+#' x1 = c(a = 2, b = 3)
+#' x2 = c(b = 2, c = 1)
+#' x3 = c(a = 1, b = -2, c = -1)
+#' sum_by_name(x1, x2, x3)
+#' @export
+sum_by_name <- \(...) {
+  xs <- list(...)
+  xs <- xs[lengths(xs) > 0L]
+  if (!length(xs)) return(numeric())
+  xs |>
+    do.call(what = 'rbind_by_name', args = _) |> 
+    colSums(na.rm = TRUE)
+}
+
+
