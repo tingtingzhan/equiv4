@@ -2,7 +2,12 @@
 
 #' @title equivlist
 #' 
-#' @param ... one or more \linkS4class{equiv} objects
+#' @param ... one or more \linkS4class{equiv} objects with identical `@caption` slots
+#' 
+#' @returns
+#' The function [equivlist()] returns an `S3` object of class `'equivlist'`.
+#' 
+#' @seealso [equivs()]
 #' 
 #' @export
 equivlist <- \(...) {
@@ -22,15 +27,13 @@ equivlist <- \(...) {
 }
 
 
-
-#' @importFrom charwidth row_fmt_matrix
+#' @method as.matrix equivlist
 #' @export
-print.equivlist <- \(x, fmt_caption = '%s', ...) {
+as.matrix.equivlist <- \(x, ...) {
   
   y1 <- x |>
     lapply(FUN = \(i) i@current) |>
     do.call(what = rbind_by_name, args = _)
-  
   if (!length(y1)) return(invisible())
   
   y2 <- y1[, colMeans(is.na(y1)) != 1L, drop = FALSE]
@@ -40,19 +43,34 @@ print.equivlist <- \(x, fmt_caption = '%s', ...) {
   if (all(is.na(y3))) return(invisible())
   if (all(abs(y3) < .Machine$double.eps, na.rm = TRUE)) return(invisible())
   
-  y <- y3 |>
-    apply(MARGIN = 2L, FUN = median_binlabel, accuracy = .1, simplify = FALSE) |>
-    do.call(what = cbind) # to make sure not getting a 'vector'
+  return(y3)
+  
+}
+
+
+#' @importFrom charwidth row_fmt_matrix
+#' @export
+print.equivlist <- \(x, fmt_caption = '%s', ...) {
+  
+  z <- x |>
+    as.matrix.equivlist()
+  
+  if (!length(z)) return(invisible())
   
   x[[1L]]@caption |> 
     sprintf(fmt = fmt_caption) |> 
     style_bold() |> bg_br_yellow() |> 
     cat('\n')
-  y |>
+  
+  z |>
+    apply(MARGIN = 2L, FUN = median_binlabel, accuracy = .1, simplify = FALSE) |>
+    do.call(what = cbind) |> # to make sure not getting a 'vector'
     row_fmt_matrix() |>
     cat(sep = '\n')
   cat('\n')
-  return(invisible(y))
+  
+  return(invisible())
+  
 }
 
 

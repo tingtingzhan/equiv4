@@ -7,8 +7,14 @@
 equivs(...)
 }
 \arguments{
-\item{...}{one or more \linkS4class{equiv} objects}
+\item{...}{one or more \linkS4class{equiv} objects with unique \verb{@caption} slots}
+}
+\value{
+The function \code{\link[=equivs]{equivs()}} returns an \code{S3} object of class \code{'equivs'}.
 }
 \description{
 equivs
+}
+\seealso{
+\code{\link[=equivlist]{equivlist()}}
 }

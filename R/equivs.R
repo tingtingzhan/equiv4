@@ -2,7 +2,12 @@
 
 #' @title equivs
 #' 
-#' @param ... one or more \linkS4class{equiv} objects
+#' @param ... one or more \linkS4class{equiv} objects with unique `@caption` slots
+#' 
+#' @returns
+#' The function [equivs()] returns an `S3` object of class `'equivs'`.
+#' 
+#' @seealso [equivlist()]
 #' 
 #' @export
 equivs <- \(...) {
@@ -28,7 +33,7 @@ print.equivs <- \(x, ...) {
   
   x |>
     lapply(FUN = \(i) { # do not want to print list names
-      print(i, ...) # [print.equiv]
+      print.equiv(i, ...)
       cat('\n')
     })
   
