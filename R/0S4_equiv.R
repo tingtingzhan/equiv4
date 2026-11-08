@@ -16,9 +16,7 @@
 #' 
 #' @slot tol \link[base]{numeric} scalar, the tolerance, default value is `.Machine$double.eps`
 #' 
-#' @param object,x an \linkS4class{equiv} object
-#' 
-#' @param value see the function \link[base]{names<-}
+#' @param object an \linkS4class{equiv} object
 #' 
 #' @references 
 #' \url{https://en.wikipedia.org/wiki/Bioequivalence}
@@ -59,13 +57,18 @@ setClass(Class = 'equiv', slots = c(
 
 
 if (FALSE) {
-  setClass(Class = 'newcls', contains = 'numeric', slot = c(names = 'character', any = 'ANY'))
   x = c(a = .6, b = 1.3) 
   x |>
     attr(which = 'names')
   
+  setClass(Class = 'newcls', contains = 'numeric', slot = c(names = 'character', any = 'ANY'))
+  
   # inherit directly from an atomic type via `contains`
-  new('newcls', x)@.Data # names not retained!!!
+  z = new('newcls', x)
+  names(z) # as attr
+  z@.Data # names not here
+  names(z@.Data) = names(x) # names cannot be assigned
+  z@.Data # names still not here
   
   # explicit slot
   new('newcls', any = x)@any # names are retained
@@ -139,6 +142,13 @@ equiv <- \(
   ))
   
 }
+
+
+
+
+#' @rdname equiv-class
+#' @export
+setMethod(f = show, signature = 'equiv', definition = \(object) print.equiv(object))
 
 
 

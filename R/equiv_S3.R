@@ -1,8 +1,33 @@
 
+
+
+
+#' @export
+names.equiv <- \(x) {
+  x@current |> 
+    names()
+}
+
+
+#' @export
+`names<-.equiv` <- \(x, value) {
+  names(x@current) <- value
+  return(x)
+}
+
+
+
+#' @export
+length.equiv <- \(x) {
+  x@current |> 
+    length()
+}
+
+
+
+
+
 # @param margin \link[base]{numeric} scalar, the acceptance margin \eqn{m} of the ratio \eqn{x/x_0}, default value is 1.1.  In other words, \eqn{x} is considered equivalent to \eqn{x_0}, if \eqn{x/x_0\in (1/m, m)}.
-#' 
-
-
 #' @export
 cut.equiv <- \(x, margin = 1.1, ...) {
   
@@ -90,3 +115,22 @@ format.equiv <- \(x, accuracy = .1, ...) {
 
 
 
+
+#' @importFrom charwidth row_fmt_matrix
+#' @export
+print.equiv <- \(x, fmt_caption = '%s', ...) {
+  
+  fmt <- x |> 
+    format.equiv()
+  if (!length(fmt)) return(invisible()) # exception handling
+  
+  x@caption |> # len0 compatible
+    sprintf(fmt = fmt_caption) |> 
+    bg_br_yellow() |> style_bold() |>
+    cat('\n')
+  
+  fmt |>
+    row_fmt_matrix() |>
+    cat(sep = '\n')
+  # cli_verbatim() # sep by '\n' by default
+}
