@@ -44,7 +44,7 @@
 #' names(targt) = names(cur)
 #' equiv(current = cur)
 #' equiv(current = cur, target = targt)
-#'
+#' @keywords equivalence target tolerance
 #' @export
 setClass(Class = 'equiv', slots = c(
   caption = 'character',

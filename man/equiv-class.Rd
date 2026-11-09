@@ -61,8 +61,10 @@ targt = rnorm(n = length(cur), mean = cur, sd = cur/10)
 names(targt) = names(cur)
 equiv(current = cur)
 equiv(current = cur, target = targt)
-
 }
 \references{
 \url{https://en.wikipedia.org/wiki/Bioequivalence}
 }
+\keyword{equivalence}
+\keyword{target}
+\keyword{tolerance}

@@ -21,3 +21,5 @@ x2 = c(b = 2, c = 1)
 x3 = c(a = 1, b = -2, c = -1)
 sum_by_name(x1, x2, x3)
 }
+\keyword{by-vector-name}
+\keyword{sum}

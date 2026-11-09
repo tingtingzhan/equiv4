@@ -18,3 +18,5 @@ equivlist
 \seealso{
 \code{\link[=equivs]{equivs()}}
 }
+\keyword{equivalence}
+\keyword{identical-caption}

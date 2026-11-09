@@ -1,12 +1,13 @@
 
 
-#' @title Row-Bind Unbalanced Vectors
+#' @title Row-Bind by Name
 #' 
 #' @param ... two or more \link[base]{vector}s of the same \link[base]{storage.mode}
 #' 
 #' @examples
 #' rbind_by_name(c(a = 1, b = 2), c(a = 11, c = 13))
 #' rbind_by_name(A = c(a = 1, b = 2), B = c(a = 11, c = 13))
+#' @keywords rbind by-vector-name
 #' @export
 rbind_by_name <- \(...) {
   
@@ -66,6 +67,7 @@ rbind_by_name <- \(...) {
 #' x2 = c(b = 2, c = 1)
 #' x3 = c(a = 1, b = -2, c = -1)
 #' sum_by_name(x1, x2, x3)
+#' @keywords sum by-vector-name
 #' @export
 sum_by_name <- \(...) {
   xs <- list(...)

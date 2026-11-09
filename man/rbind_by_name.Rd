@@ -2,7 +2,7 @@
 % Please edit documentation in R/op_by_name.R
 \name{rbind_by_name}
 \alias{rbind_by_name}
-\title{Row-Bind Unbalanced Vectors}
+\title{Row-Bind by Name}
 \usage{
 rbind_by_name(...)
 }
@@ -10,9 +10,11 @@ rbind_by_name(...)
 \item{...}{two or more \link[base]{vector}s of the same \link[base]{storage.mode}}
 }
 \description{
-Row-Bind Unbalanced Vectors
+Row-Bind by Name
 }
 \examples{
 rbind_by_name(c(a = 1, b = 2), c(a = 11, c = 13))
 rbind_by_name(A = c(a = 1, b = 2), B = c(a = 11, c = 13))
 }
+\keyword{by-vector-name}
+\keyword{rbind}

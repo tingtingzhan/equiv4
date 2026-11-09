@@ -8,7 +8,7 @@
 #' The function [equivlist()] returns an `S3` object of class `'equivlist'`.
 #' 
 #' @seealso [equivs()]
-#' 
+#' @keywords equivalence identical-caption
 #' @export
 equivlist <- \(...) {
   

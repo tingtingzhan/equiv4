@@ -8,7 +8,7 @@
 #' The function [equivs()] returns an `S3` object of class `'equivs'`.
 #' 
 #' @seealso [equivlist()]
-#' 
+#' @keywords equivalence unique-caption
 #' @export
 equivs <- \(...) {
   
