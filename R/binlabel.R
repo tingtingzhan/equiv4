@@ -25,27 +25,28 @@ binlabel <- \(x, ...) {
   x |> 
     .bincode(
       breaks = c(0, .001, .01, 1, Inf),
-      right = FALSE # important!!
+      right = TRUE, # important!!
+      include.lowest = TRUE
     ) |> 
-    switch('1' = { # (0, .001)
+    switch('1' = { # [0, .001]
       \(newx) {
         z <- label_number(scale = 1e4, suffix = '\u2031', ...)(newx)
         z[is.na(newx) | (newx < 1e-5)] <- '-'
         return(z)
       }
-    }, '2' = { # [.001, .01)
+    }, '2' = { # (.001, .01]
       \(newx) {
         z <- label_number(scale = 1e3, suffix = '\u2030', ...)(newx)
         z[is.na(newx) | (newx < 1e-4)] <- '-'
         return(z)
       }
-    }, '3' = { # [.01, 1)
+    }, '3' = { # (.01, 1]
       \(newx) {
         z <- label_number(scale = 1e2, suffix = '%', ...)(newx)
         z[is.na(newx) | (newx < 1e-3)] <- '-'
         return(z)
       }
-    }, '4' = { # [1, Inf) 
+    }, '4' = { # (1, Inf) 
       \(newx) {
         z <- label_number(...)(newx)
         z[is.na(newx) | (newx < 1e-2)] <- '-'
